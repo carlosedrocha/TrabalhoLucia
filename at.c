@@ -59,23 +59,62 @@ void bubbleSort (Dados dados[]) { // Ordena pelo tamanho de forma decrescente
     }
 }
 
+void particao(Dados dados[], int inferior, int superior, Dados pivo) {
+    Dados aux = dados[inferior];
+    int menorAltura = dados[inferior].altura;
+    int maiorAltura = dados[superior].altura;
+    while(maiorAltura > menorAltura) {
+        while(dados[inferior].altura <= aux.altura) {
+            inferior--;
+        }
+    }
+
+    while(dados[superior].altura > aux.altura) {
+        superior++;
+    }
+
+    if (inferior < superior) {
+        dados[superior] = aux;
+    }
+    dados[superior] = dados[inferior];
+    pivo = dados[superior];
+
+}
+
+void quickSort(Dados dados[], int inferior, int superior){
+    Dados j = dados[inferior]; // pivo
+
+    if(dados[inferior].altura < dados[superior].altura) {
+        particao(dados, inferior, superior, j);
+        quickSort(dados, inferior, superior);
+    }
+
+}
+
+
 int main() {
    
     Dados dados[TAM];
-    
+    int inferior = 0;
+    int superior = TAM;
     // preenche os dados
     preencherDados(dados);
     
     // imprime os dados
     imprimirDados(dados); 
 
-    // BubbleSort
-    bubbleSort(dados);
 
+    // QuickSort
+    quickSort(dados,inferior, superior);
     // imprime os dados
-    printf("\nApos bubble sort\n");
+    printf("\nApos quickSort\n");
     imprimirDados(dados); 
 
+    // BubbleSort
+    bubbleSort(dados);
+    // imprime os dados
+    printf("\nApos BubbleSort\n");
+    imprimirDados(dados); 
     return 0;
 
 }
