@@ -4,8 +4,9 @@
 #include <time.h>
 
 
-#define TAM 4
-#define SEED 5
+#define TAM 25
+#define SEED 20
+
 
 typedef struct Dados{
     float altura,peso;
@@ -59,44 +60,85 @@ void bubbleSort (Dados dados[]) { // Ordena pelo tamanho de forma decrescente
     }
 }
 
-void particao(Dados dados[], int inferior, int superior, Dados pivo) {
-    Dados aux = dados[inferior];
-    int menorAltura = dados[inferior].altura;
-    int maiorAltura = dados[superior].altura;
-    while(maiorAltura > menorAltura) {
-        while(dados[inferior].altura <= aux.altura) {
-            inferior--;
+void trocaPosicao (Dados dados[], int de, int para) {
+    Dados temp = dados[de];
+    dados[de] = dados[para];
+    dados[para] = temp;
+}
+
+int particao(Dados dados[], int inferior, int superior) {
+
+    int li = inferior; // limite inferior
+    int ls = superior; // limite superior   
+    Dados aux = dados[li]; // pivo
+    //int maiorAltura = dados[superior].altura;
+    printf("=========================particao de %2.f e %2.f==============================",dados[li].altura, dados[ls].altura);
+
+    while( li < ls ) {
+
+        while(dados[li].altura >= aux.altura) {
+            li++;
+        }
+        printf("\n li pos while: %d\n", li);
+        while(dados[ls].altura < aux.altura) {
+            ls--;
+        }
+        printf("\n ls pos while: %d\n", ls);
+
+        if (li < ls) {
+            trocaPosicao(dados, li, ls);
         }
     }
+    
+    trocaPosicao(dados, ls, inferior);   
+    // printf("================================================================");
+    printf("\n ls --- %d\n", ls);
 
-    while(dados[superior].altura > aux.altura) {
-        superior++;
-    }
-
-    if (inferior < superior) {
-        dados[superior] = aux;
-    }
-    dados[superior] = dados[inferior];
-    pivo = dados[superior];
-
+    return ls;
 }
+
+
 
 void quickSort(Dados dados[], int inferior, int superior){
-    Dados j = dados[inferior]; // pivo
 
-    if(dados[inferior].altura < dados[superior].altura) {
-        particao(dados, inferior, superior, j);
-        quickSort(dados, inferior, superior);
+    int li = inferior; // limite inferior
+    int ls = superior; // limite superior
+    
+    printf("\n\tli: %d, altura na posicao: %f, ls: %d, altura na posicao: %f\n", li, dados[li].altura, ls, dados[ls].altura);
+    
+    if (li < ls) {
+        
+        int j = particao(dados, li, ls); // pivo
+        printf("\nj pos particao=%d", j);
+
+        if (inferior < j - 1) {
+            quickSort(dados, li, j-1);
+        }
+
+        if (j < superior) {
+            quickSort(dados, j+1, superior);
+        }
+        
     }
 
 }
+
+
 
 
 int main() {
    
     Dados dados[TAM];
     int inferior = 0;
-    int superior = TAM;
+    int superior = TAM - 1;
+    clock_t tempo;
+    double tempo_execucao;
+
+    tempo = clock(); //armazena tempo
+
+    printf("Variavel tempo %lf", &tempo); //
+    printf("Endereco variavel tempo %lf", tempo); //
+
     // preenche os dados
     preencherDados(dados);
     
@@ -104,17 +146,25 @@ int main() {
     imprimirDados(dados); 
 
 
-    // QuickSort
+    //QuickSort
     quickSort(dados,inferior, superior);
-    // imprime os dados
+    //imprime os dados
     printf("\nApos quickSort\n");
     imprimirDados(dados); 
 
-    // BubbleSort
-    bubbleSort(dados);
-    // imprime os dados
-    printf("\nApos BubbleSort\n");
-    imprimirDados(dados); 
+    // // BubbleSort
+    // bubbleSort(dados);
+    // // imprime os dados
+    // printf("\nApos BubbleSort\n");
+    // imprimirDados(dados); 
+
+    printf("Variavel tempo %lf", &tempo); //
+    printf("Endereco variavel tempo %lf", tempo); //
+    tempo = clock() - tempo; //tempo final - tempo inicial
+    //imprime o tempo na tela
+    
+    printf("termino %ld || Tempo de execucao: %lf milisegundos"), tempo, (((double)tempo)/((CLOCKS_PER_SEC/1000)));
+
     return 0;
 
 }
