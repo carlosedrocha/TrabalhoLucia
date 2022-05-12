@@ -4,7 +4,7 @@
 #include <time.h>
 
 
-#define TAM 25
+#define TAM 200
 #define SEED 20
 
 
